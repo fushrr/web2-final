@@ -28,7 +28,7 @@ async function request(url, method = "GET", body) {
   return data;
 }
 
-// UI state
+
 function showAuth() {
   $("authView").classList.remove("hidden");
   $("appView").classList.add("hidden");
@@ -87,11 +87,11 @@ function badgeClass(status) {
 }
 
 function normalizeSpecies(value) {
-  if (!value) return null; // ничего не выбрали
+  if (!value) return null; 
 
   if (value === "dog" || value === "cat") return value;
 
-  // hamster и bird сохраняем как other в БД
+  
   if (value === "hamster" || value === "bird") return "other";
 
   return "other";
@@ -140,7 +140,6 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
-// Events: tabs
 $("tabLogin").addEventListener("click", () => setActiveTab("login"));
 $("tabRegister").addEventListener("click", () => setActiveTab("register"));
 
@@ -283,7 +282,7 @@ async function loadPets() {
   renderPets(pets);
 }
 
-// Pets actions (delegate)
+// Pets actions 
 $("petsList").addEventListener("click", async (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -337,7 +336,6 @@ async function refreshAll() {
   await loadPets();
 }
 
-// On load: if token exists, go to app; else show auth
 (function init() {
   setActiveTab("login");
   if (getToken()) {

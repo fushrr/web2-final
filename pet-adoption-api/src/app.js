@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// serve frontend (HTML, CSS, JS)
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/admin", adminRoutes);
@@ -25,12 +25,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// API routes
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/pets", petRoutes);
 
-// global error handler
+
 app.use(errorHandler);
 
 module.exports = app;
