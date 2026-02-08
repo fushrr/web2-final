@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pet Adoption</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🐾</div>
+      <div>
+        <div class="title">Pet Adoption</div>
+        <div class="subtitle">Simple full-stack demo (Express + MongoDB)</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <span id="whoami" class="chip hidden"></span>
+      <button id="logoutBtn" class="btn btn-ghost hidden" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- AUTH VIEW -->
+    <section id="authView" class="card">
+      <div class="card-head">
+        <h2>Welcome</h2>
+        <p>Create an account or sign in to manage your pets.</p>
+      </div>
+
+      <div class="tabs">
+        <button id="tabLogin" class="tab active" type="button">Login</button>
+        <button id="tabRegister" class="tab" type="button">Register</button>
+      </div>
+
+      <div id="loginPane" class="pane">
+        <form id="loginForm" class="form">
+          <div class="row">
+            <label class="label">Email</label>
+            <input id="loginEmail" class="input" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <div class="row">
+            <label class="label">Password</label>
+            <input id="loginPassword" class="input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+          </div>
+          <button class="btn btn-primary" type="submit">Login</button>
+          <p class="hint">No account? Switch to <b>Register</b>.</p>
+        </form>
+      </div>
+
+      <div id="registerPane" class="pane hidden">
+        <form id="registerForm" class="form">
+          <div class="row">
+            <label class="label">Username</label>
+            <input id="regUsername" class="input" placeholder="Ayan" autocomplete="username"/>
+          </div>
+          <div class="row">
+            <label class="label">Email</label>
+            <input id="regEmail" class="input" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <div class="row">
+            <label class="label">Password</label>
+            <input id="regPassword" class="input" type="password" placeholder="min 6 chars" autocomplete="new-password"/>
+          </div>
+          <button class="btn btn-primary" type="submit">Create account</button>
+          <p class="hint">Already have an account? Switch to <b>Login</b>.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- APP VIEW (after login) -->
+    <section id="appView" class="hidden">
+      <div class="grid">
+        <section class="card">
+          <div class="card-head">
+            <h2>My Profile</h2>
+            <p>Your account info (private endpoint).</p>
+          </div>
+          <div id="profileBox" class="profile-box">
+            <div class="skeleton"></div>
+          </div>
+          <div class="actions">
+            <button id="refreshProfileBtn" class="btn btn-ghost" type="button">Refresh</button>
+          </div>
+          <form id="profileForm" class="form" style="margin-top:12px;">
+          <div class="two">
+          <div class="row">
+          <label class="label">New Username</label>
+          <input id="profileUsername" class="input" placeholder="New username" />
+          </div>
+          <div class="row">
+          <label class="label">New Email</label>
+          <input id="profileEmail" class="input" placeholder="new@email.com" />
+          </div>
+          </div>
+
+          <div class="actions">
+          <button id="updateProfileBtn" class="btn btn-primary" type="submit">
+          Update Profile
+          </button>
+          <button id="clearProfileBtn" class="btn btn-ghost" type="button">
+          Clear
+          </button>
+          </div>
+          </form>
+          </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h2>Add a Pet</h2>
+            <p>Create a pet (private CRUD).</p>
+          </div>
+
+          <form id="petForm" class="form">
+            <div class="two">
+              <div class="row">
+                <label class="label">Name</label>
+                <input id="petName" class="input" placeholder="Buddy" />
+              </div>
+             <div class="row">
+              <label class="label">Species</label>
+                <select id="petSpecies" class="input">
+                  <option value="">Select species</option>
+                  <option value="dog">dog</option>
+                  <option value="cat">cat</option>
+                  <option value="hamster">hamster</option>
+                  <option value="bird">bird</option>
+                  <option value="other">other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="two">
+              <div class="row">
+                <label class="label">Breed (optional)</label>
+                <input id="petBreed" class="input" placeholder="Labrador" />
+              </div>
+              <div class="row">
+                <label class="label">Age (optional)</label>
+                <input id="petAge" class="input" placeholder="3" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="two">
+              <div class="row">
+                <label class="label">Gender</label>
+                <select id="petGender" class="input">
+                  <option value="unknown">unknown</option>
+                  <option value="male">male</option>
+                  <option value="female">female</option>
+                </select>
+              </div>
+              <div class="row">
+                <label class="label">Status</label>
+                <select id="petStatus" class="input">
+                  <option value="available">available</option>
+                  <option value="pending">pending</option>
+                  <option value="adopted">adopted</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <label class="label">Description (optional)</label>
+              <textarea id="petDesc" class="input textarea" rows="3" placeholder="Friendly and playful..."></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Create Pet</button>
+              <button id="clearPetBtn" class="btn btn-ghost" type="button">Clear</button>
+            </div>
+          </form>
+        </section>
+
+                <section id="adminCard" class="card hidden">
+          <div class="card-head">
+            <h2>Admin Panel</h2>
+            <p>Manage users (admin / superadmin).</p>
+          </div>
+
+          <div class="actions">
+            <button id="loadUsersBtn" class="btn btn-ghost" type="button">
+              Load Users
+            </button>
+          </div>
+
+          <div id="adminBox" class="profile-box" style="margin-top:12px;">
+            <div class="empty">No users loaded.</div>
+          </div>
+        </section>
+
+
+        <section class="card span-2">
+          <div class="card-head">
+            <h2>My Pets</h2>
+            <p>Only your pets are shown (owner = token user).</p>
+          </div>
+
+          <div class="actions">
+            <button id="loadPetsBtn" class="btn btn-ghost" type="button">Load / Refresh</button>
+          </div>
+
+          <div id="petsList" class="pets-list">
+            <div class="empty">No pets loaded yet.</div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Built with Node.js + Express + MongoDB</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
