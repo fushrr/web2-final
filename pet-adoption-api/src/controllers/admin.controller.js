@@ -65,6 +65,41 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const setUserRole = async (req, res, next) => {
+  try {
+    if (req.user.role !== "superadmin") {
+      return res.status(403).json({ message: "Only superadmin can change roles" });
+    }
+
+    const { role } = req.body; 
+    if (!role || !["user", "admin"].includes(role)) {
+      return res.status(400).json({ message: "role must be 'user' or 'admin'" });
+    }
+
+    if (req.params.id === req.user.id) {
+      return res.status(400).json({ message: "You cannot change your own role" });
+    }
+
+    const target = await User.findById(req.params.id);
+    if (!target) return res.status(404).json({ message: "User not found" });
+
+    if (target.role === "superadmin") {
+      return res.status(403).json({ message: "You cannot change superadmin role" });
+    }
+
+    if (target.role === role) {
+      return res.status(400).json({ message: `User is already ${role}` });
+    }
+
+    target.role = role;
+    await target.save();
+
+    const safe = await User.findById(target._id).select("-password");
+    res.json({ message: "Role updated", user: safe });
+  } catch (err) {
+    next(err);
+  }
+};
 
 
-module.exports = { getAllUsers, promoteToAdmin, deleteUser };
+module.exports = { getAllUsers, promoteToAdmin, deleteUser, setUserRole };

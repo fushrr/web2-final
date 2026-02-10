@@ -313,20 +313,83 @@ const loadUsersBtn = $("loadUsersBtn");
 if (loadUsersBtn) loadUsersBtn.addEventListener("click", async () => {
   try {
     const users = await request("/api/admin/users");
+const me = await request("/api/users/profile");
 
-    $("adminBox").innerHTML = users.map(u => `
-      <div style="margin-bottom:10px;">
+$("adminBox").innerHTML = users.map(u => {
+  const isMe = u._id === me._id;
+  const isSuper = u.role === "superadmin";
+
+  const canChangeRole = me.role === "superadmin" && !isMe && !isSuper;
+
+  const canKick =
+    !isMe &&
+    (
+      (me.role === "superadmin" && !isSuper) ||
+      (me.role === "admin" && u.role === "user")
+    );
+
+  return `
+    <div class="admin-user">
+      <div class="admin-info">
         👤 <b>${escapeHtml(u.username)}</b>
         — ${escapeHtml(u.email)}
-        (${escapeHtml(u.role)})
+        <span class="role">(${escapeHtml(u.role)})</span>
       </div>
-    `).join("");
+
+      <div class="admin-actions">
+        ${canChangeRole ? `
+          <button class="btn-mini" data-action="promote" data-id="${u._id}">promote</button>
+          <button class="btn-mini" data-action="demote" data-id="${u._id}">demote</button>
+        ` : ""}
+
+        ${canKick ? `
+          <button class="btn-mini btn-danger" data-action="kick" data-id="${u._id}">kick</button>
+        ` : ""}
+      </div>
+    </div>
+  `;
+}).join("");
 
     toast("ok", "Users loaded");
   } catch (err) {
     toast("err", err.message);
   }
 });
+
+
+const adminBox = $("adminBox");
+if (adminBox) {
+  adminBox.addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+
+    try {
+      if (action === "promote") {
+        await request(`/api/admin/users/${id}/role`, "PATCH", { role: "admin" });
+        toast("ok", "Promoted to admin");
+      }
+
+      if (action === "demote") {
+        await request(`/api/admin/users/${id}/role`, "PATCH", { role: "user" });
+        toast("ok", "Demoted to user");
+      }
+
+      if (action === "kick") {
+        if (!confirm("Delete this user?")) return;
+        await request(`/api/admin/users/${id}`, "DELETE");
+        toast("ok", "User deleted");
+      }
+
+      
+      if ($("loadUsersBtn")) $("loadUsersBtn").click();
+    } catch (err) {
+      toast("err", err.message);
+    }
+  });
+}
 
 
 async function refreshAll() {

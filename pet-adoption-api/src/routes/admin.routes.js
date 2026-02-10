@@ -8,7 +8,10 @@ const {
   getAllUsers,
   promoteToAdmin,
   deleteUser,
+  setUserRole,
 } = require("../controllers/admin.controller");
+
+router.patch("/users/:id/role", auth, adminOnly, setUserRole);
 
 router.get("/users", auth, adminOnly, getAllUsers);
 router.patch("/users/:id/promote", auth, adminOnly, promoteToAdmin);
