@@ -349,18 +349,6 @@ if (loadUsersBtn) loadUsersBtn.addEventListener("click", async () => {
     const users = await request("/api/admin/users");
 const me = await request("/api/users/profile");
 
-const loadAllPetsBtn = $("loadAllPetsBtn");
-if (loadAllPetsBtn) loadAllPetsBtn.addEventListener("click", async () => {
-  try {
-    const pets = await request("/api/admin/pets");
-    renderAllPetsGrouped(pets);
-    toast("ok", "All pets loaded");
-  } catch (err) {
-    toast("err", err.message);
-  }
-});
-
-
 $("adminBox").innerHTML = users.map(u => {
   const isMe = u._id === me._id;
   const isSuper = u.role === "superadmin";
@@ -401,6 +389,18 @@ $("adminBox").innerHTML = users.map(u => {
     toast("err", err.message);
   }
 });
+
+const loadAllPetsBtn = $("loadAllPetsBtn");
+if (loadAllPetsBtn) loadAllPetsBtn.addEventListener("click", async () => {
+  try {
+    const pets = await request("/api/admin/pets");
+    renderAllPetsGrouped(pets);
+    toast("ok", "All pets loaded");
+  } catch (err) {
+    toast("err", err.message);
+  }
+});
+
 
 
 const adminBox = $("adminBox");
