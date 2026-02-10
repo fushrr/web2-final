@@ -1,4 +1,18 @@
 const User = require("../models/User");
+const Pet = require("../models/Pet");
+
+const getAllPets = async (req, res, next) => {
+  try {
+    const pets = await Pet.find()
+      .populate("owner", "username email role")
+      .sort({ createdAt: -1 });
+
+    res.json(pets);
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 const getAllUsers = async (req, res, next) => {
   try {
@@ -102,4 +116,4 @@ const setUserRole = async (req, res, next) => {
 };
 
 
-module.exports = { getAllUsers, promoteToAdmin, deleteUser, setUserRole };
+module.exports = { getAllUsers, promoteToAdmin, deleteUser, setUserRole, getAllPets };

@@ -131,6 +131,40 @@ function renderPets(pets) {
   `).join("");
 }
 
+function renderAllPetsGrouped(pets) {
+  const box = $("allPetsBox");
+  if (!box) return;
+
+  if (!pets.length) {
+    box.innerHTML = `<div class="empty">No pets in system.</div>`;
+    return;
+  }
+
+  const groups = new Map();
+  for (const p of pets) {
+    const ownerName = p.owner?.username || "Unknown";
+    if (!groups.has(ownerName)) groups.set(ownerName, []);
+    groups.get(ownerName).push(p);
+  }
+
+  box.innerHTML = [...groups.entries()].map(([ownerName, ownerPets]) => `
+    <div class="admin-user" style="margin-bottom:10px;">
+      <div><b>${escapeHtml(ownerName)}:</b></div>
+      <div style="margin-top:6px;">
+        ${ownerPets.map(p => `
+          <div style="padding:6px 0; border-top:1px solid rgba(255,255,255,0.08);">
+            🐾 <b>${escapeHtml(p.name)}</b>
+            (${escapeHtml(p.species)}) — <span class="role">${escapeHtml(p.status)}</span>
+            ${p.breed ? ` • breed: ${escapeHtml(p.breed)}` : ""}
+            ${p.age != null ? ` • age: ${p.age}` : ""}
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+
 function escapeHtml(str) {
   return String(str ?? "")
     .replaceAll("&", "&amp;")
@@ -314,6 +348,18 @@ if (loadUsersBtn) loadUsersBtn.addEventListener("click", async () => {
   try {
     const users = await request("/api/admin/users");
 const me = await request("/api/users/profile");
+
+const loadAllPetsBtn = $("loadAllPetsBtn");
+if (loadAllPetsBtn) loadAllPetsBtn.addEventListener("click", async () => {
+  try {
+    const pets = await request("/api/admin/pets");
+    renderAllPetsGrouped(pets);
+    toast("ok", "All pets loaded");
+  } catch (err) {
+    toast("err", err.message);
+  }
+});
+
 
 $("adminBox").innerHTML = users.map(u => {
   const isMe = u._id === me._id;

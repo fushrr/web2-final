@@ -9,11 +9,15 @@ const {
   promoteToAdmin,
   deleteUser,
   setUserRole,
+  getAllPets,
 } = require("../controllers/admin.controller");
+
 
 router.patch("/users/:id/role", auth, adminOnly, setUserRole);
 
 router.get("/users", auth, adminOnly, getAllUsers);
+router.get("/pets", auth, adminOnly, getAllPets);
+
 router.patch("/users/:id/promote", auth, adminOnly, promoteToAdmin);
 router.delete("/users/:id", auth, adminOnly, deleteUser);
 
